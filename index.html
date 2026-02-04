@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Secure Message for Mummy ❤️</title>
+<title>LoveOS Ultra Message ❤️</title>
 
 <style>
 body{
   margin:0;
   font-family: Consolas, monospace;
-  background: linear-gradient(135deg,#ff9a9e,#fad0c4);
+  background:#0f172a;
+  color:#e5e7eb;
+  transition:.5s;
   overflow:auto;
+}
+
+.light{
+  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+  color:#222;
 }
 
 .center{
@@ -22,191 +29,245 @@ body{
 }
 
 .card{
-  background:white;
-  width:700px;
-  max-width:92%;
-  padding:40px;
+  background:#020617;
   border-radius:20px;
+  padding:40px;
+  width:760px;
+  max-width:94%;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  transition:.5s;
+}
+
+.light .card{
+  background:white;
   box-shadow:0 20px 50px rgba(0,0,0,.25);
 }
 
-h1{color:#e91e63;margin-top:0}
+h1{margin-top:0;color:#22c55e}
 
 button{
-  padding:14px 26px;
+  padding:12px 22px;
   border:none;
   border-radius:30px;
-  background:#e91e63;
-  color:white;
-  font-size:16px;
+  background:#22c55e;
+  color:black;
+  font-weight:bold;
   cursor:pointer;
-  margin:10px;
+  margin:8px;
 }
-
-button:hover{transform:scale(1.08)}
 
 #letter{display:none}
 #text{
   white-space:pre-line;
-  font-size:18px;
-  line-height:1.7;
   text-align:left;
+  line-height:1.7;
+  font-size:18px;
+}
+
+.cursor{
+  display:inline-block;
+  width:10px;
+  background:#22c55e;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{50%{opacity:0}}
+
+.counter{
+  font-size:18px;
+  margin:6px 0;
 }
 
 .heart{
   position:fixed;
-  animation:float 6s linear infinite;
-  pointer-events:none;
+  top:-20px;
+  z-index:9999;
+  animation:fall linear forwards;
 }
 
-@keyframes float{
-  from{transform:translateY(100vh)}
-  to{transform:translateY(-10vh)}
+@keyframes fall{
+  to{transform:translateY(110vh);opacity:0}
 }
 
 #popup{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.6);
+  background:rgba(0,0,0,.7);
   justify-content:center;
   align-items:center;
+  z-index:10000;
 }
 
 #popup div{
   background:white;
+  color:black;
   padding:30px;
-  border-radius:15px;
-  font-size:20px;
-  max-width:400px;
+  border-radius:16px;
+  max-width:420px;
+  text-align:center;
 }
 </style>
 </head>
 
 <body>
 
-<!-- INTRO SCREEN -->
+<!-- INTRO -->
 <div class="center" id="start">
-  <div class="card">
-    <h1>💻 LoveOS Secure Scan</h1>
-    <p id="scan"></p>
-    <button onclick="openGift()">Open Message for Mummy 🔐</button>
-  </div>
+<div class="card">
+<h1>💻 LoveOS Ultra Boot</h1>
+<div id="scan"></div>
+<button onclick="boot()">Initialize Secure Message 🔐</button>
+</div>
 </div>
 
 <!-- LETTER -->
 <div class="center" id="letter">
-  <div class="card">
-    <h1>System Message → Mummy ❤️</h1>
-    <div id="text"></div>
+<div class="card">
 
-    <button id="secretBtn" onclick="secret()" style="display:none">
-      Hidden Note 💌
-    </button>
+<h1>Terminal → Mummy_Message.exe</h1>
 
-    <button id="endBtn" onclick="burst()" style="display:none">
-      Send Love ❤️
-    </button>
-  </div>
+<div class="counter">Love Level: <span id="c1">0</span>%</div>
+<div class="counter">Sacrifice Score: <span id="c2">0</span></div>
+<div class="counter">Support Uptime: <span id="c3">0</span> hrs</div>
+
+<br>
+
+<div id="text"></div><span class="cursor"></span>
+
+<br><br>
+
+<button onclick="secret()" id="secretBtn" style="display:none">Hidden Note 💌</button>
+<button onclick="burst(this)" id="loveBtn" style="display:none">Send Love ❤️</button>
+<button onclick="cert()" id="certBtn" style="display:none">Generate Certificate 🏆</button>
+<button onclick="toggleMode()">Toggle Mode 🌙</button>
+
+</div>
 </div>
 
 <!-- POPUP -->
 <div id="popup" onclick="this.style.display='none'">
-  <div>
-    Status: Unlimited Love Detected 💗<br><br>
-    You are my lifetime favorite person, Mummy.
-  </div>
+<div id="popupText"></div>
 </div>
 
-<audio id="bgm" loop>
-<source src="https://cdn.pixabay.com/download/audio/2022/10/30/audio_946b6f8e7c.mp3">
-</audio>
-
 <script>
-/* scan animation */
+/* scan */
 const lines=[
-"Scanning memories...",
-"Loading sacrifice database...",
-"Checking support logs...",
-"Best Mummy detected ✅"
+"> Booting LoveOS...",
+"> Loading memories...",
+"> Verifying sacrifice logs...",
+"> Best Mummy Found ✅"
 ];
-let s=0;
-function scanStep(){
- if(s<lines.length){
-   scan.innerHTML+=lines[s]+"<br>";
-   s++;
-   setTimeout(scanStep,700);
+let si=0;
+function scan(){
+ if(si<lines.length){
+  scanDiv.innerHTML+=lines[si]+"<br>";
+  si++;
+  setTimeout(scan,700);
  }
 }
-scanStep();
+const scanDiv=document.getElementById("scan");
+scan();
 
-/* letter */
-const msg=`
-Dear Mummy,
-
-Agar life ek software hoti,
-toh aap uska core engine hoti.
-
-Har error pe aapne debug kiya,
-har failure pe restart karwaya.
-
-Jab system hang hua —
-aapne patience install kiya.
-
-Jab confidence low hua —
-aapne belief update kiya.
-
-Main jo bhi hoon —
-aapki coding ka result hoon.
-
-Thank you for everything.
-
-I Love You Mummy ❤️
-
-— Your Son, Chirag
-`;
-
-let i=0;
-
-function openGift(){
+/* boot */
+function boot(){
  start.style.display="none";
  letter.style.display="flex";
- bgm.play();
+ runCounters();
  type();
 }
 
+/* counters */
+function runCounters(){
+ let a=0,b=0,c=0;
+ let t=setInterval(()=>{
+  c1.innerText=a++;
+  c2.innerText=b+=5;
+  c3.innerText=c+=1;
+  if(a>=100) clearInterval(t);
+ },40);
+}
+
+/* ✅ HINDI MESSAGE */
+const msg=`
+Result:
+
+Mummy,
+
+Meri zindagi ki sabse badi taakat aap ho.
+
+Aapne har din mere liye itna kiya hai
+jitna main kabhi chuka nahi paunga.
+
+Jab bhi mushkil aayi,
+aap mere saath khadi rahi.
+Jab bhi himmat kam padi,
+aapne hausla badhaya.
+
+Aap sirf meri mummy nahi,
+meri pehli teacher,
+meri guide,
+aur meri sabse safe jagah ho.
+
+Aaj jo bhi hoon,
+aapki wajah se hoon.
+
+Main shayad perfect beta nahi hoon,
+par pyaar sabse zyada aapse hi karta hoon.
+
+I Love You Mummy ❤️
+
+— Aapka nalayak beta, Chirag
+`;
+
+let i=0;
 function type(){
  if(i<msg.length){
   text.innerHTML+=msg.charAt(i);
   i++;
-  setTimeout(type,38);
+  setTimeout(type,35);
  } else {
   secretBtn.style.display="inline-block";
-  endBtn.style.display="inline-block";
+  loveBtn.style.display="inline-block";
+  certBtn.style.display="inline-block";
  }
 }
 
+/* popup */
 function secret(){
+ popupText.innerHTML="Hidden Log:<br><br>Mummy = Lifetime VIP User 💗";
  popup.style.display="flex";
 }
 
-function burst(){
+/* hearts */
+function burst(btn){
+ btn.innerText="Love Sent 💖";
  for(let i=0;i<70;i++){
   const h=document.createElement("div");
   h.className="heart";
-  h.innerHTML="❤️";
+  h.innerHTML=["❤️","💖","💗"][Math.random()*3|0];
   h.style.left=Math.random()*100+"vw";
-  h.style.fontSize=(18+Math.random()*30)+"px";
+  h.style.fontSize=(18+Math.random()*26)+"px";
+  h.style.animationDuration=(3+Math.random()*3)+"s";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
  }
+}
+
+/* certificate */
+function cert(){
+ popupText.innerHTML=
+ "🏆 Certificate Generated<br><br>"+
+ "World’s Best Mummy<br>"+
+ "Issued By: Chirag Systems 💻";
+ popup.style.display="flex";
+}
+
+/* dark light */
+function toggleMode(){
+ document.body.classList.toggle("light");
 }
 </script>
 
 </body>
 </html>
->
-
-</body>
-</html>
-
